@@ -1,2 +1,2 @@
 # sample-flask-auth
-Sample Flask Authentication
+Sample Flask Authentication with Database
