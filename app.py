@@ -78,5 +78,60 @@ def create_user():
         return make_response(jsonify({'message': 'User created successfully'}))
     return make_response(jsonify({'message': 'Invalid data'}), 400)
 
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+@login_required
+def read_user(user_id):
+    """
+    Read user details by user ID.
+    Returns:
+        Response: User details
+    """
+    user = User.query.get(user_id)
+
+    if user:
+        return make_response(jsonify({'username': user.username}))
+    return make_response(jsonify({'message': "User not found"}))
+
+
+@app.route('/user/<int:user_id>', methods=['PUT'])
+@login_required
+def update_user(user_id):
+    """
+    Update user details by user ID.
+    Returns:
+        Response: Message with the status of the user update
+    """
+    data = request.json
+    password = data.get('password')
+
+    user = User.query.get(user_id)
+
+    if user:
+        user.password = password
+        db.session.commit()
+        return make_response(jsonify({'message': f'User {user_id} updated successfully'}))
+    return make_response(jsonify({'message': "User not found"}))
+
+
+@app.route('/user/<int:user_id>', methods=['DELETE'])
+@login_required
+def delete_user(user_id):
+    """
+    Delete user by user ID.
+    Returns:
+        Response: Message with the status of the user deletion
+    """
+    user = User.query.get(user_id)
+
+    if user_id == current_user.id:
+        return make_response(jsonify({'message': "You can't delete your own account"}), 403)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return make_response(jsonify({'message': 'User deleted successfully'}))
+    return make_response(jsonify({'message': "User not found"}))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
