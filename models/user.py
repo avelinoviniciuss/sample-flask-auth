@@ -10,3 +10,5 @@ class User(db.Model, UserMixin):
     id: int = db.Column(db.Integer, primary_key=True)
     username: str = db.Column(db.String(80), nullable=False, unique=True)
     password: str = db.Column(db.String(80), nullable=False)
+    role: str = db.Column(db.String(80), nullable=False, default='user')
+    
